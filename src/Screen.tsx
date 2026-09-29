@@ -49,8 +49,8 @@ const Hook = () => {
     <AbsoluteFill style={{ background: '#f6f5fb', transform: `translateX(${shake}px)` }}>
       <Img src={staticFile('shots/hero.webp')} style={{ width: '100%', height: '100%', objectFit: 'cover', transform: `scale(${1.15 - 0.1 * Math.min(1, frame / 60)})` }} />
       <div style={{ position: 'absolute', left: 16, right: 16, top: 90, transform: `scale(${s})`, textAlign: 'center' }}>
-        <div style={{ background: '#dc2626', color: 'white', fontWeight: 900, fontSize: 54, borderRadius: 18, padding: '10px 0', letterSpacing: -2, boxShadow: '0 12px 30px rgba(220,38,38,0.4)' }}>23:{String(59 - Math.floor(frame / 40)).padStart(2, '0')}</div>
-        <div style={{ marginTop: 10, background: 'white', color: INK, fontWeight: 800, fontSize: 20, borderRadius: 14, padding: 10 }}>tugas_final_FIX_banget.docx<br /><span style={{ color: MUTED, fontSize: 14 }}>ada di PC rumah</span></div>
+        <div style={{ background: '#dc2626', color: 'white', fontWeight: 900, fontSize: 46, borderRadius: 18, padding: '10px 0', letterSpacing: -2, boxShadow: '0 12px 30px rgba(220,38,38,0.4)' }}>23:{String(59 - Math.floor(frame / 40)).padStart(2, '0')}</div>
+        <div style={{ marginTop: 10, background: 'white', color: INK, fontWeight: 800, fontSize: 14, borderRadius: 14, padding: 10 }}>tugas_final_FIX_banget.docx<br /><span style={{ color: MUTED, fontSize: 14 }}>ada di PC rumah</span></div>
       </div>
     </AbsoluteFill>
   );
