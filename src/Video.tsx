@@ -1,7 +1,7 @@
 import { AbsoluteFill, Audio, Sequence, staticFile } from 'remotion';
 import { loadFont } from '@remotion/google-fonts/Inter';
 import { Background } from './Background';
-import { Phone } from './Phone';
+import { Device } from './Device';
 import { Subtitle } from './Subtitle';
 import { Sticker } from './Sticker';
 import { Brand } from './Brand';
@@ -21,6 +21,9 @@ export const Video = ({ timing }: VideoProps) => {
   return (
     <AbsoluteFill style={{ fontFamily }}>
       <Background />
+      <Sequence from={0} durationInFrames={creditsFrom} name="device">
+        <Device timing={timing} />
+      </Sequence>
       {SCENES.map((scene, i) => {
         const t = timing[i];
         return (
@@ -28,10 +31,9 @@ export const Video = ({ timing }: VideoProps) => {
             <Audio src={staticFile(`audio/${scene.vo}`)} playbackRate={VO_RATE} />
             {scene.sfx.map((cue, k) => (
               <Sequence key={k} from={Math.round(cue.at * t.voFrames)} name={`sfx ${cue.file}`}>
-                <Audio src={staticFile(`sfx/${cue.file}`)} volume={cue.volume ?? 0.7} />
+                <Audio src={staticFile(`sfx/${cue.file}`)} volume={cue.volume ?? 0.6} />
               </Sequence>
             ))}
-            <Phone visual={scene.visual} sceneFrames={t.voFrames} />
             {scene.stickers.map((cue, k) => (
               <Sequence key={k} from={Math.round(cue.at * t.voFrames)} name={`sticker ${cue.file}`}>
                 <Sticker cue={cue} />

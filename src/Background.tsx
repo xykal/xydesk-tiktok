@@ -1,56 +1,33 @@
-import { AbsoluteFill, interpolate, useCurrentFrame } from 'remotion';
+import { AbsoluteFill, useCurrentFrame } from 'remotion';
 
-const ORBS = [
-  { x: 12, y: 18, size: 420, color: '#a78bfa', speed: 0.9, phase: 0 },
-  { x: 80, y: 32, size: 360, color: '#f472b6', speed: 0.7, phase: 2 },
-  { x: 30, y: 82, size: 480, color: '#60a5fa', speed: 0.6, phase: 4 },
-  { x: 86, y: 78, size: 300, color: '#c4b5fd', speed: 1.1, phase: 1 },
+const BLOBS = [
+  { x: 10, y: 12, size: 520, color: 'rgba(167,139,250,0.35)', speed: 0.5, phase: 0 },
+  { x: 90, y: 30, size: 420, color: 'rgba(244,114,182,0.18)', speed: 0.4, phase: 2 },
+  { x: 25, y: 88, size: 560, color: 'rgba(96,165,250,0.18)', speed: 0.35, phase: 4 },
+  { x: 85, y: 80, size: 380, color: 'rgba(124,58,237,0.16)', speed: 0.6, phase: 1 },
 ];
 
-// Latar: gradasi ungu XyDesk + bola cahaya yang melayang pelan + grid tipis.
+// Latar terang seperti web XyDesk: putih ke lavender + blob lembut bergerak pelan.
 export const Background = () => {
-  const frame = useCurrentFrame();
-  const t = frame / 60;
-  const gridShift = (frame * 0.35) % 48;
+  const t = useCurrentFrame() / 60;
   return (
-    <AbsoluteFill style={{ background: 'linear-gradient(165deg, #1b0a33 0%, #3b1a7a 55%, #5b21b6 100%)' }}>
-      {ORBS.map((o, i) => {
-        const dx = Math.sin(t * o.speed + o.phase) * 40;
-        const dy = Math.cos(t * o.speed * 0.8 + o.phase) * 30;
-        return (
-          <div
-            key={i}
-            style={{
-              position: 'absolute',
-              left: `calc(${o.x}% - ${o.size / 2}px)`,
-              top: `calc(${o.y}% - ${o.size / 2}px)`,
-              width: o.size,
-              height: o.size,
-              borderRadius: '50%',
-              background: o.color,
-              opacity: 0.28,
-              filter: 'blur(90px)',
-              transform: `translate(${dx}px, ${dy}px)`,
-            }}
-          />
-        );
-      })}
-      <AbsoluteFill
-        style={{
-          backgroundImage:
-            'linear-gradient(rgba(255,255,255,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.06) 1px, transparent 1px)',
-          backgroundSize: '48px 48px',
-          backgroundPosition: `0 ${gridShift}px`,
-          maskImage: 'radial-gradient(ellipse at 50% 40%, black 30%, transparent 75%)',
-          WebkitMaskImage: 'radial-gradient(ellipse at 50% 40%, black 30%, transparent 75%)',
-        }}
-      />
-      <AbsoluteFill
-        style={{
-          background: 'radial-gradient(ellipse at 50% 100%, rgba(0,0,0,0.45), transparent 60%)',
-          opacity: interpolate(frame, [0, 30], [0, 1], { extrapolateRight: 'clamp' }),
-        }}
-      />
+    <AbsoluteFill style={{ background: 'linear-gradient(180deg, #ffffff 0%, #f5f1ff 60%, #ede7fe 100%)' }}>
+      {BLOBS.map((b, i) => (
+        <div
+          key={i}
+          style={{
+            position: 'absolute',
+            left: `calc(${b.x}% - ${b.size / 2}px)`,
+            top: `calc(${b.y}% - ${b.size / 2}px)`,
+            width: b.size,
+            height: b.size,
+            borderRadius: '50%',
+            background: b.color,
+            filter: 'blur(70px)',
+            transform: `translate(${Math.sin(t * b.speed + b.phase) * 36}px, ${Math.cos(t * b.speed * 0.8 + b.phase) * 28}px)`,
+          }}
+        />
+      ))}
     </AbsoluteFill>
   );
 };

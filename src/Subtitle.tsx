@@ -1,70 +1,62 @@
-import { Easing, interpolate, spring, useCurrentFrame, useVideoConfig } from 'remotion';
+import { Easing, interpolate, useCurrentFrame } from 'remotion';
 
 type Props = { words: string[]; voFrames: number };
 
-const LINE_MAX = 3;
+const isBrand = (s: string) => /xydesk|xyverse/i.test(s);
 
-// Subtitle 3 kata per baris; kata aktif "pop" dengan spring cepat, baris baru
-// masuk dari bawah dengan easing halus (tidak ada frame loncat).
+// Gabungkan kata pendek ("di", "gak") dengan kata berikutnya supaya tiap kartu terasa utuh.
+export const groupWords = (words: string[]): string[] => {
+  const out: string[] = [];
+  for (let i = 0; i < words.length; i++) {
+    const w = words[i];
+    const next = words[i + 1];
+    if (next && w.replace(/[^\w]/g, '').length <= 3 && (w + ' ' + next).length <= 14) {
+      out.push(w + ' ' + next);
+      i++;
+    } else out.push(w);
+  }
+  return out;
+};
+
+// Satu kata besar di tengah (kinetic): fade+slide masuk lembut, keluar crossfade.
 export const Subtitle = ({ words, voFrames }: Props) => {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
-  const perWord = (voFrames - Math.round(0.2 * fps)) / words.length;
-  const active = Math.min(words.length - 1, Math.floor(frame / perWord));
-  const groupStart = Math.floor(active / LINE_MAX) * LINE_MAX;
-  const group = words.slice(groupStart, groupStart + LINE_MAX);
-  const groupFrame = frame - groupStart * perWord;
-  const slide = interpolate(groupFrame, [0, 7], [22, 0], { extrapolateRight: 'clamp', easing: Easing.out(Easing.cubic) });
-  const fade = interpolate(groupFrame, [0, 5], [0, 1], { extrapolateRight: 'clamp' });
-  const isXy = (s: string) => /xydesk|xyverse/i.test(s);
-
+  const groups = groupWords(words);
+  const usable = voFrames - 6;
+  const weights = groups.map((g) => g.length + 3);
+  const total = weights.reduce((a, b) => a + b, 0);
+  let start = 0;
+  const spans = groups.map((g, i) => {
+    const len = (weights[i] / total) * usable;
+    const s = { text: g, from: start, to: start + len };
+    start += len;
+    return s;
+  });
+  const found = spans.findIndex((s) => frame < s.to);
+  const cur = spans[found === -1 ? spans.length - 1 : found];
+  const local = frame - cur.from;
+  const len = cur.to - cur.from;
+  const inT = interpolate(local, [0, Math.min(8, len * 0.4)], [0, 1], { extrapolateRight: 'clamp', extrapolateLeft: 'clamp', easing: Easing.out(Easing.cubic) });
+  const outT = interpolate(local, [len - 4, len], [1, 0], { extrapolateRight: 'clamp', extrapolateLeft: 'clamp' });
+  const text = cur.text.replace(/[.,!?]+$/, '');
+  const size = text.length <= 7 ? 96 : text.length <= 11 ? 76 : text.length <= 15 ? 60 : 48;
+  const brand = isBrand(text);
   return (
-    <div
-      style={{
-        position: 'absolute',
-        left: 28,
-        right: 28,
-        bottom: 200,
-        display: 'flex',
-        flexWrap: 'wrap',
-        justifyContent: 'center',
-        alignItems: 'center',
-        gap: '4px 12px',
-        transform: `translateY(${slide}px)`,
-        opacity: fade,
-      }}
-    >
-      {group.map((word, i) => {
-        const idx = groupStart + i;
-        const isActive = idx === active;
-        const done = idx < active;
-        const bump = spring({ frame: frame - idx * perWord, fps, config: { damping: 11, stiffness: 420, mass: 0.4 } });
-        const scale = isActive ? interpolate(bump, [0, 1], [1.28, 1.1]) : 1;
-        const brand = isXy(word);
-        return (
-          <span
-            key={idx}
-            style={{
-              display: 'inline-block',
-              fontSize: 58,
-              fontWeight: 900,
-              lineHeight: 1.05,
-              letterSpacing: -1.5,
-              color: brand ? '#fde047' : '#ffffff',
-              opacity: done ? 0.75 : 1,
-              transform: `scale(${scale}) rotate(${isActive ? -1.2 : 0}deg)`,
-              textShadow: '0 3px 0 rgba(0,0,0,0.4), 0 10px 26px rgba(0,0,0,0.5)',
-              WebkitTextStroke: '2px rgba(20,8,40,0.95)',
-              paintOrder: 'stroke fill',
-              background: isActive && !brand ? 'linear-gradient(135deg,#7c3aed,#a855f7)' : 'transparent',
-              borderRadius: 14,
-              padding: isActive ? '0 12px' : '0',
-            }}
-          >
-            {word}
-          </span>
-        );
-      })}
+    <div style={{ position: 'absolute', left: 24, right: 24, top: 820, height: 150, display: 'flex', alignItems: 'center', justifyContent: 'center', textAlign: 'center' }}>
+      <span
+        style={{
+          fontSize: size,
+          fontWeight: 900,
+          letterSpacing: -size * 0.04,
+          lineHeight: 1,
+          color: brand ? '#7c3aed' : '#14102a',
+          opacity: inT * outT,
+          transform: `translateY(${(1 - inT) * 16}px) scale(${0.94 + 0.06 * inT})`,
+          whiteSpace: 'nowrap',
+        }}
+      >
+        {text}
+      </span>
     </div>
   );
 };
