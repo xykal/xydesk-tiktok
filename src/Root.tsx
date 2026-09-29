@@ -1,6 +1,6 @@
 import { Composition, staticFile } from 'remotion';
 import { getAudioDurationInSeconds } from '@remotion/media-utils';
-import { FPS, HEIGHT, SCENES, VO_RATE, WIDTH } from './script';
+import { CREDITS_SECONDS, FPS, HEIGHT, SCENES, VO_RATE, WIDTH } from './script';
 import { Video, type Timing, type VideoProps } from './Video';
 
 // Durasi tiap adegan diukur dari file suara saat render, bukan ditulis tangan.
@@ -30,7 +30,7 @@ export const Root = () => (
       const timing = await computeTiming();
       const last = timing[timing.length - 1];
       return {
-        durationInFrames: last.from + last.frames + Math.round(0.4 * FPS),
+        durationInFrames: last.from + last.frames + CREDITS_SECONDS * FPS,
         props: { timing },
       };
     }}

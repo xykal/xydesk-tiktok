@@ -22,3 +22,13 @@ Suara sintetis (TTS), bahasa Indonesia. Pengucapan merek: "Eksye Desk".
 
 ## Font
 Nunito (Google Fonts, OFL) dimuat saat render.
+
+## SFX tambahan v2 (myinstants.com)
+- Metal pipe clang: https://www.myinstants.com/en/instant/metal-pipe-clang-80894/
+- Among Us role reveal: https://www.myinstants.com/en/instant/among-us-role-reveal-sound-34956/
+- FAHHH: https://www.myinstants.com/en/instant/fahhh-42300/
+- Apple Pay: https://www.myinstants.com/en/instant/apple-pay-45496/
+
+## Brand
+- Logo XyVerse Technology Global: milik XyVerse Technology Global (dipakai atas izin pemilik).
+- Screenshot web XyDesk: https://remote.xydesk.my.id
