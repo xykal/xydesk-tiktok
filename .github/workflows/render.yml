@@ -46,6 +46,6 @@ jobs:
         run: |
           tag="render-$(date -u +%Y%m%d-%H%M)"
           gh release create "$tag" out/xydesk-tiktok.mp4 out/preview.png \
-            --title "Render $tag" \
+            --draft --title "Render $tag" \
             --notes "720x1280 @ 60 fps. Commit ${GITHUB_SHA::7}. Run ${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
           echo "https://github.com/${GITHUB_REPOSITORY}/releases/tag/$tag" >> "$GITHUB_STEP_SUMMARY"
