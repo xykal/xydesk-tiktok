@@ -1,0 +1,41 @@
+name: Render
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: ['src/**', 'public/**', 'package.json', 'remotion.config.ts', '.github/workflows/render.yml']
+
+permissions:
+  contents: read
+
+concurrency:
+  group: render-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  render:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4.4.0
+        with:
+          node-version: '22'
+      - name: Install
+        run: npm install --no-audit --no-fund
+      - name: Typecheck
+        run: npm run typecheck
+      - name: Chromium untuk Remotion
+        run: npx remotion browser ensure
+      - name: Render 720x1280 @ 60 fps
+        run: npm run render
+      - name: Preview still
+        run: npm run still
+      - name: Info berkas
+        run: ls -la out && ffprobe -v error -show_entries stream=width,height,r_frame_rate,codec_name -of csv=p=0 out/xydesk-tiktok.mp4
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        with:
+          name: xydesk-tiktok-mp4
+          path: out/
+          retention-days: 14
