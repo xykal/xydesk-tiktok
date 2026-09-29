@@ -33,7 +33,7 @@ jobs:
       - name: Preview still
         run: npm run still
       - name: Info berkas
-        run: ls -la out && ffprobe -v error -show_entries stream=width,height,r_frame_rate,codec_name -of csv=p=0 out/xydesk-tiktok.mp4
+        run: ls -la out && npx remotion ffprobe -v error -show_entries stream=width,height,r_frame_rate,codec_name -of csv=p=0 out/xydesk-tiktok.mp4
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
           name: xydesk-tiktok-mp4

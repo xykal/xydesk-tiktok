@@ -70,5 +70,7 @@ export const SCENES: Scene[] = [
 ];
 
 export const FPS = 60;
+// Narasi TTS agak santai; dipercepat sedikit supaya ritmenya TikTok.
+export const VO_RATE = 1.12;
 export const WIDTH = 720;
 export const HEIGHT = 1280;
